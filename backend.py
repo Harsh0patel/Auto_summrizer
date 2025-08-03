@@ -5,7 +5,6 @@ from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import pdfplumber
 import fitz
 import re
-import spacy
 import contractions
 
 try:
@@ -220,8 +219,6 @@ class Parser:
         return processed_content
     
     def preprocess_text(self, text):
-        # Load small English model
-        nlp = spacy.load("en_core_web_sm")
         # 1. Remove URLs and promotional lines
         text = re.sub(r"http\S+|www\S+|watch.*?»", "", text, flags=re.IGNORECASE)
 
@@ -237,7 +234,6 @@ class Parser:
         text = re.sub(r"\s+", " ", text).strip()
 
         # 5. Sentence segmentation using spaCy
-        doc = nlp(text)
         sentences = [sent.text.strip().capitalize() for sent in doc.sents if sent.text.strip()]
 
         # Fix lowercase 'i' when it’s a pronoun

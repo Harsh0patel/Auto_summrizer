@@ -1,4 +1,5 @@
 typing
+numpy
 Pathlib
 logging
 pdfminer.six == 20250506

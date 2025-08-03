@@ -9,3 +9,4 @@ pandas
 PyMuPDF == 1.26.3
 transformers
 contractions
+torch

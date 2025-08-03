@@ -4,10 +4,10 @@ Pathlib
 logging
 pdfminer.six == 20250506
 pdfplumber == 0.11.7
-spacy
 https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl
 pandas
 PyMuPDF == 1.26.3
 transformers
 contractions
 torch
+spacy

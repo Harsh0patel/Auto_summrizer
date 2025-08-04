@@ -7,16 +7,6 @@ import fitz
 import re
 import spacy
 import contractions
-import subprocess
-import sys
-
-def get_nlp_model():
-    try:
-        return spacy.load("en_core_web_sm")
-    except OSError:
-        print("Downloading spaCy model...")
-        subprocess.run([sys.executable, "-m", "spacy", "download", "en_core_web_sm"])
-        return spacy.load("en_core_web_sm")
 
 try:
     import PyPDF2
@@ -231,7 +221,7 @@ class Parser:
     
     def preprocess_text(self, text):
         # Load small English model
-        nlp = get_nlp_model()
+        nlp = spacy.load("en_core_web_sm")
         # 1. Remove URLs and promotional lines
         text = re.sub(r"http\S+|www\S+|watch.*?»", "", text, flags=re.IGNORECASE)
 

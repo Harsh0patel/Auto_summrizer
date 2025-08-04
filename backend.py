@@ -7,7 +7,18 @@ import fitz
 import re
 import spacy
 import contractions
+import subprocess
+import sys
 
+
+def get_nlp_model():
+    try:
+        return spacy.load("en_core_web_sm")
+    except OSError:
+        print("Downloading spaCy model...")
+        subprocess.run([sys.executable, "-m", "spacy", "download", "en_core_web_sm"])
+        return spacy.load("en_core_web_sm")
+    
 try:
     import pdfplumber
     PDFPLUMBER_AVAILABLE = True

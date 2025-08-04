@@ -231,7 +231,7 @@ class Parser:
     
     def preprocess_text(self, text):
         # Load small English model
-        nlp = spacy.load("en_core_web_sm")
+        nlp = get_nlp_model()
         # 1. Remove URLs and promotional lines
         text = re.sub(r"http\S+|www\S+|watch.*?»", "", text, flags=re.IGNORECASE)
 

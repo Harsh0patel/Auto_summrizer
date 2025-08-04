@@ -1,6 +1,21 @@
 import streamlit as st
 import backend
 import io
+import spacy
+import subprocess
+import sys
+
+
+@st.cache_resource
+def load_model_temporarily():
+    try:
+        nlp = spacy.load("en_core_web_sm")
+        return nlp
+    except OSError:
+        st.write("Downloading temporary spaCy model...")
+        
+        # Download the model
+        subprocess.run([sys.executable, "-m", "spacy", "download", "en_core_web_sm"])
 
 left, center, right = st.columns([1, 4, 1])
 

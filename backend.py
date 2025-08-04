@@ -9,12 +9,6 @@ import spacy
 import contractions
 
 try:
-    import PyPDF2
-    PDF_PYPDF2_AVAILABLE = True
-except ImportError:
-    PDF_PYPDF2_AVAILABLE = False
-
-try:
     import pdfplumber
     PDFPLUMBER_AVAILABLE = True
 except ImportError:

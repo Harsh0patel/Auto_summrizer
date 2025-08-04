@@ -10,7 +10,6 @@ import contractions
 import subprocess
 import sys
 
-
 def get_nlp_model():
     try:
         return spacy.load("en_core_web_sm")
@@ -18,7 +17,13 @@ def get_nlp_model():
         print("Downloading spaCy model...")
         subprocess.run([sys.executable, "-m", "spacy", "download", "en_core_web_sm"])
         return spacy.load("en_core_web_sm")
-    
+
+try:
+    import PyPDF2
+    PDF_PYPDF2_AVAILABLE = True
+except ImportError:
+    PDF_PYPDF2_AVAILABLE = False
+
 try:
     import pdfplumber
     PDFPLUMBER_AVAILABLE = True

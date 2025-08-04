@@ -1,8 +1,8 @@
 typing
-spacy == 3.7.1
+spacy == 3.7.2
 Pathlib
 logging
-https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl
+https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.2/en_core_web_sm-3.7.2-py3-none-any.whl
 pdfminer.six == 20250506
 pdfplumber == 0.11.7
 pandas

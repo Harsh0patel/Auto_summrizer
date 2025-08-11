@@ -1,12 +1,8 @@
 from pathlib import Path
 import logging
 from pdfminer.high_level import extract_text
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import pdfplumber
 import fitz
-import re
-import spacy
-import contractions
 
 try:
     import PyPDF2
@@ -25,6 +21,7 @@ try:
     PDF_MUPDF_AVAILABLE = True
 except ImportError:
     PDF_MUPDF_AVAILABLE = False
+
 
 class FileParserError(Exception):
     pass
@@ -47,7 +44,7 @@ class Parser:
             if hasattr(file_path, 'name'):
                 extension = Path(file_path.name).suffix.lower()
             else:
-                # Assume PDF if no extension available
+                # Assume txt if no extension available
                 extension = '.txt'
             
             if extension not in self.supported_extensions:
@@ -133,7 +130,7 @@ class Parser:
         
         full_text = '\n\n'.join([page['text'] for page in text_content])
         full_text = self.preprocess_text(full_text)
-        full_text = self.summury_generated(full_text)
+        # full_text = self.summury_generated(full_text)
         return full_text
 
     def _parse_pdf_with_mupdf(self, file_path):
@@ -163,7 +160,7 @@ class Parser:
         
         full_text = '\n\n'.join([p['text'] for p in text_content])
         full_text = self.preprocess_text(full_text)
-        full_text = self.summury_generated(full_text)
+        # full_text = self.summury_generated(full_text)
         return full_text
 
     def _parse_pdf_with_pdfminer(self, file_path):
@@ -177,13 +174,13 @@ class Parser:
             
             # Preprocess text
             full_text = self.preprocess_text(full_text)
-            full_text = self.summury_generated(full_text)
+            # full_text = self.summury_generated(full_text)
             return full_text
 
         except Exception as e:
             print(f"[ERROR] PDFMiner failed to parse: {e}")
             raise e
-    
+        
     def _parse_text_file(self, file_path):
         encodings = ['utf-8', 'utf-16', 'latin-1', 'cp1252']
         
@@ -216,55 +213,5 @@ class Parser:
             raise FileParserError(f"Could not decode text file with any supported encoding")
         
         processed_content = self.preprocess_text(content)
-        processed_content = self.summury_generated(processed_content)
+        # processed_content = self.summury_generated(processed_content)
         return processed_content
-    
-    def preprocess_text(self, text):
-        # Load small English model
-        nlp = spacy.load("en_core_web_sm")
-        # 1. Remove URLs and promotional lines
-        text = re.sub(r"http\S+|www\S+|watch.*?»", "", text, flags=re.IGNORECASE)
-
-        # 2. Remove boilerplate/copyright notices
-        text = re.sub(r"Copyright.*?reserved\.", "", text, flags=re.IGNORECASE)
-        text = re.sub(r"This material.*?redistributed", "", text, flags=re.IGNORECASE)
-
-        # 3. Normalize quotes/apostrophes
-        text = text.replace("’", "'").replace("‘", "'")
-        text = text.replace("“", '"').replace("”", '"')
-
-        # 4. Normalize whitespace
-        text = re.sub(r"\s+", " ", text).strip()
-
-        # Fix lowercase 'i' when it’s a pronoun
-        text = re.sub(r"\bi\b", "I", text)
-
-        # Remove trailing junk
-        text = re.sub(r"E-mail to a friend\s*\.*", "", text, flags=re.IGNORECASE)
-        text = re.sub(r'[^\x00-\x7F]+', ' ', text)
-        text = re.sub(r"\.\.+", ".", text)
-        text = re.sub(r"\b\w\b", "", text)  # Remove single-letter tokens (can hurt if text has acronyms)
-        text = contractions.fix(text)
-
-        # 5. Sentence segmentation using spaCy
-        doc = nlp(text)
-        sentences = [sent.text.strip().capitalize() for sent in doc.sents if sent.text.strip()]
-        
-        # 6. Join cleaned sentences
-        clean_text = " ".join(sentences)
-
-        return clean_text
-
-    def summury_generated(self, text):
-
-        model = "google/long-t5-tglobal-base"
-        tokenizer = AutoTokenizer.from_pretrained(model)
-        model = AutoModelForSeq2SeqLM.from_pretrained(model)
-
-        text = "summarize: " + text
-        inputs = tokenizer(text, return_tensors="pt", max_length=4096, truncation=True)
-
-        summary_ids = model.generate(inputs["input_ids"], max_length=256, num_beams=4, early_stopping=True)
-        summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
-
-        return summary

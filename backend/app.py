@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from fastapi import HTTPException
 import Generate_summary as generator
 from pydantic import BaseModel
+from preprocess import preprocess_text
 import os
 import pymongo
 from bson.objectid import ObjectId
@@ -48,4 +49,5 @@ def Generate_text(data : GenerateData):
         return HTTPException(status_code = 404, detail = "file not found")
     
     txt = doc["file_content"]
+    txt = preprocess_text(txt)
     return {"summary" : model.summury_generated(txt)}

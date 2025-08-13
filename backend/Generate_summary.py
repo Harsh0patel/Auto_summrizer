@@ -4,8 +4,12 @@ from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 class Generate_summary():
     def __init__(self):
         model = "google/long-t5-tglobal-base"
+        if torch.cuda.is_available():
+            self.device = torch.device("cuda")
+        else:
+            self.device = torch.device("cpu")
         self.tokenizer = AutoTokenizer.from_pretrained(model)
-        self.model = AutoModelForSeq2SeqLM.from_pretrained(model).to("cuda")
+        self.model = AutoModelForSeq2SeqLM.from_pretrained(model).to(self.device)
 
     def summury_generated(self, text):
         text = "summarize: " + text

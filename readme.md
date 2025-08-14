@@ -62,22 +62,14 @@ python summarizer.py --input document.pdf --type pdf --length 5
 python summarizer.py --text "Your long text here..." --length 2
 ```
 
-### Python API
+### Python API Image
 
-```python
-from summarizer import AutoSummarizer
+```bash
+docker pull harsh0patel/summury-api:latest
+```
 
-# Initialize the summarizer
-summarizer = AutoSummarizer()
-
-# Summarize text
-text = "Your long text content here..."
-summary = summarizer.summarize(text, num_sentences=3)
-print(summary)
-
-# Summarize file
-summary = summarizer.summarize_file("path/to/document.txt", num_sentences=5)
-print(summary)
+```link
+https://hub.docker.com/repository/docker/harsh0patel/summury-api/general
 ```
 
 ## 📊 Example

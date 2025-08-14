@@ -62,20 +62,6 @@ python summarizer.py --input document.pdf --type pdf --length 5
 python summarizer.py --text "Your long text here..." --length 2
 ```
 
-### Web Interface
-
-1. **Start the web server**
-```bash
-python app.py
-```
-
-2. **Open your browser and navigate to**
-```
-http://localhost:8000
-```
-
-3. **Upload your document or paste text directly**
-
 ### Python API
 
 ```python

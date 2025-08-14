@@ -84,22 +84,6 @@ The field of artificial intelligence has grown rapidly in recent years. Machine 
 The field of artificial intelligence has grown rapidly with sophisticated machine learning algorithms. Deep learning has been successful in image recognition, natural language processing, and speech recognition. These advances have practical applications in healthcare, finance, and transportation industries.
 ```
 
-## ⚙️ Configuration
-
-Create a `config.json` file to customize settings:
-
-```json
-{
-  "default_summary_length": 3,
-  "min_sentence_length": 10,
-  "max_sentence_length": 200,
-  "summarization_method": "extractive",
-  "language": "english",
-  "remove_stopwords": true,
-  "use_stemming": false
-}
-```
-
 ## 📁 Project Structure
 
 ```

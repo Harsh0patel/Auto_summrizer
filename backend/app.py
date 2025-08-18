@@ -29,6 +29,16 @@ class Upload_data(BaseModel):
     file_name : str
     file_content : str  
 
+class Upload_summary(BaseModel):
+    id : str
+    file_content : str
+    content_language : str
+
+class languageData(BaseModel):
+
+    file_content : str
+    file_langauge : str
+
 @app.get('/')
 def home_page():
     return JSONResponse("This is Auto summurizer api page.", status_code = 200)
@@ -38,6 +48,15 @@ def upload_file(data: Upload_data):
     file_id = db.files.insert_one({
         "file_name" : data.file_name,
         "file_content" : data.file_content
+    }).inserted_id
+    return {"file_id" : str(file_id)}
+
+@app.post('/upload_summury')
+def upload_summury(data : Upload_summary):
+    file_id = db.summary.insert_one({
+        "_id" : ObjectId(data.id),
+        "file_content" : data.file_content,
+        "content_language" : data.content_language
     }).inserted_id
     return {"file_id" : str(file_id)}
 
@@ -51,3 +70,9 @@ def Generate_text(data : GenerateData):
     txt = doc["file_content"]
     txt = preprocess_text(txt)
     return {"summary" : model.summury_generated(txt)}
+
+@app.post('/changelanguage')
+def change(data : languageData):
+    txt = data.file_content
+    language = data.file_langauge
+    return {"summary" : model.change_language(txt, language)}

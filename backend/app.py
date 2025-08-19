@@ -1,78 +1,10 @@
 from fastapi import FastAPI
-from fastapi.responses import JSONResponse
-from fastapi import HTTPException
-import Generate_summary as generator
-from pydantic import BaseModel
-from preprocess import preprocess_text
-import os
-import pymongo
-from bson.objectid import ObjectId
-from dotenv import load_dotenv
-
-# Database
-load_dotenv()
-mongo_url = os.getenv("MONGO_URL")
-client = pymongo.MongoClient(mongo_url)
-db = client["file_db"]
+from routes import generatedata, home_page, languagechange, upload_data
 
 # API
 app = FastAPI()
 
-# Model
-model = generator.Generate_summary()
-
-# Pydantic Models
-class GenerateData(BaseModel):
-    file_id : str
-
-class Upload_data(BaseModel):
-    file_name : str
-    file_content : str  
-
-class Upload_summary(BaseModel):
-    id : str
-    file_content : str
-    content_language : str
-
-class languageData(BaseModel):
-
-    file_content : str
-    file_langauge : str
-
-@app.get('/')
-def home_page():
-    return JSONResponse("This is Auto summurizer api page.", status_code = 200)
-
-@app.post('/upload')
-def upload_file(data: Upload_data):
-    file_id = db.files.insert_one({
-        "file_name" : data.file_name,
-        "file_content" : data.file_content
-    }).inserted_id
-    return {"file_id" : str(file_id)}
-
-@app.post('/upload_summury')
-def upload_summury(data : Upload_summary):
-    file_id = db.summary.insert_one({
-        "_id" : ObjectId(data.id),
-        "file_content" : data.file_content,
-        "content_language" : data.content_language
-    }).inserted_id
-    return {"file_id" : str(file_id)}
-
-@app.post('/Generatetext')
-def Generate_text(data : GenerateData):
-
-    doc = db.files.find_one({"_id": ObjectId(data.file_id)})
-    if not doc:
-        return HTTPException(status_code = 404, detail = "file not found")
-    
-    txt = doc["file_content"]
-    txt = preprocess_text(txt)
-    return {"summary" : model.summury_generated(txt)}
-
-@app.post('/changelanguage')
-def change(data : languageData):
-    txt = data.file_content
-    language = data.file_langauge
-    return {"summary" : model.change_language(txt, language)}
+app.include_router(home_page.router)
+app.include_router(upload_data.router, prefix = "/api")
+app.include_router(generatedata.router, prefix = "/api")
+app.include_router(languagechange.router, prefix = "/api")

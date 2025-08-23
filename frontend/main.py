@@ -475,6 +475,6 @@ if "summary" in st.session_state and "file_hash" in st.session_state:
 # Footer
 st.markdown("""
 <div style="text-align: center; padding: 3rem 0; color: #7f8c8d; border-top: 1px solid #ecf0f1; margin-top: 3rem;">
-    <p>Built with ❤️ using Streamlit • © 2024 Text Summarizer</p>
+    <p>Built with ❤️ using Streamlit • © 2025 Text Summarizer</p>
 </div>
 """, unsafe_allow_html=True)

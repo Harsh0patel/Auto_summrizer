@@ -14,7 +14,7 @@ st.set_page_config(
 )
 
 # API Configuration
-API = "http://127.0.0.1:8000"
+API = "http://161.118.190.255:8000"
 
 # Language mapping
 lang_map = {

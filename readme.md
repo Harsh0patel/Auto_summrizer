@@ -6,20 +6,19 @@ An intelligent text summarization tool that automatically generates concise summ
 
 - **Automatic Text Summarization**: Generate concise summaries from lengthy documents
 - **Multiple Input Formats**: Support for text files, PDFs, and direct text input
-- **Extractive & Abstractive Summarization**: Choose between different summarization approaches
-- **Customizable Summary Length**: Control the length of generated summaries
-- **Fast Processing**: Efficient algorithms for quick summarization
 - **User-Friendly Interface**: Clean and intuitive design
-- **Batch Processing**: Summarize multiple documents at once
+- **Decoupled frontend & backend**: seperate frontend and backend for future scalling
+- **API intigration**: FastAPI to connect the backend and frontend
+- **Cloud intigration**: backend deployed on OCI(Oracle cloud infrastructure) and frontend on streamlit cloud
+- **containorized backend**: backend is build in docker image with both Arm and linux use 
 
 ## 🛠️ Technologies Used
 
 - **Python 3.9+**
 - **Natural Language Processing**: NLTK, spaCy, or Transformers
 - **Machine Learning**: TensorFlow/PyTorch
-- **Web Framework**: Fast-API, Cloud
-- **Frontend**: Python
-- **PDF Processing**: PyPDF2 or pdfplumber
+- **Web Framework**: Fast-API, Cloud(Oracle Cloud)
+- **Frontend**: Python, streamlit
 - **Text Processing**: BeautifulSoup, regex
 
 ## 📦 Installation
@@ -47,22 +46,47 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-## 🖥️ Usage
+## To run locally
 
-### Command Line Interface
-
+1. **clone only frontend**
 ```bash
-# Summarize a text file
-python summarizer.py --input document.txt --output summary.txt --length 3
-
-# Summarize a PDF
-python summarizer.py --input document.pdf --type pdf --length 5
-
-# Direct text summarization
-python summarizer.py --text "Your long text here..." --length 2
+git clone https://github.com/Harsh0patel/Auto_summrizer.git
+cd Auto_summrizer
 ```
 
-### Python API Image
+2. **Create a virtual environment**
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+3. **Install dependencies**
+```bash
+pip install -r requirements.txt
+```
+
+4. **get docker image**
+```terminal
+docker pull harsh0patel/summury-api:latest
+docker run -p 8000:8000 harhs0patel/summury-api
+```
+
+5. **change main.py file this line**
+```python 
+line no: 17 API = "http://161.118.190.255:8000"  #chang this url to http://localhost:8000
+```
+
+6. **run following command**
+```terminal
+python -m streamlit run frontend/main.py
+```
+
+7. **test your document**
+
+
+## 🖥️ Usage
+
+### API Image
 
 ```bash
 docker pull harsh0patel/summury-api:latest
@@ -88,37 +112,55 @@ The field of artificial intelligence has grown rapidly with sophisticated machin
 
 ```
 Auto_summrizer/
-├── src/
-│   ├── summarizer.py          # Main summarization logic
-│   ├── text_processor.py      # Text preprocessing utilities
-│   ├── pdf_handler.py         # PDF processing functions
-│   └── utils.py              # Helper functions
-├── web/
-│   ├── app.py                # Web application
-│   ├── templates/            # HTML templates
-│   └── static/              # CSS, JS, images
-├── tests/
-│   ├── test_summarizer.py    # Unit tests
-│   └── sample_documents/     # Test documents
+├── backend/
+│   ├── config/
+|   |   |──mongodb_config.py          # mongodb call and auth
+│   ├── models/
+|   |   |──pydantic_models.py          # json format checkers inside api calls
+│   ├── routes/
+|   |   |──generatedata.py          # API route for model calls
+|   |   |──home_page.py          # API homepage route calls
+|   |   |──languagechnage.py          # API route for change language
+|   |   |──upload_data.py          # API call for upload data to database
+│   ├── utils/
+|   |   |──Generate_summary.py          # model for gnerate summary
+|   |   |──preprocess.py          # handle the text formatting and clean text
+│   ├── .dockerignore          # file not need in docker 
+│   ├── app.py         # main file for API call
+│   └── requirements.txt              # required libararys for backend
+├── frontend/
+│   └── main.py                # full frontend
+├── model/ (lstm model that was failed)
+│   ├── dataloader.ipynb    # notebook for dataload from hugging face
+│   ├── fine_tune.ipynb     # notebook for imporve the model
+│   ├── infrenceloop.py    # test loop 
+│   ├── model.ipynb    # use for modle training(lstm)
+│   ├── parser.py    # for extract the text from files 
+│   ├── preprocess.ipynb    # use for preprocess the extracted text
+│   ├── summurizer.py    # encoder-decoder class
+│   └── tokenization.py    # use for convert text into subword tokens
+├── notebooks/
+│   ├── a.py                # use for some test work and etc...
+│   ├── b.py                # user for some try and error work...
+│   └── test_whisper.py                # user for try and error work...
+├── prototype/
+│   ├── ai_summarization_100.jsonl                # data for prototype
+│   ├── bpe.model                # tokenization model
+|   |── bpe.vocab                # tokenization vocab
+│   └── prototype.ipynb                # training and test notebook
+├── .gitignore
 ├── requirements.txt          # Python dependencies
-├── config.json              # Configuration file
 └── README.md                # This file
 ```
-
-## 📈 Performance
-
-- **Processing Speed**: ~1000 words per second
-- **Accuracy**: Maintains key information with 85%+ relevance
-- **Memory Usage**: <500MB for documents up to 10MB
-- **Supported File Size**: Up to 50MB per document
 
 ## 🔮 Future Enhancements
 
 - [ ] Support for more file formats (DOCX, HTML, etc.)
-- [ ] Multi-language summarization
 - [ ] Real-time collaborative summarization
 - [ ] Summary quality scoring
 - [ ] Keyword extraction and highlighting
+- [ ] GPU backend integration for faster process
+- [ ] implementing self made summurizer 
 
 ## 🤝 Contributing
 

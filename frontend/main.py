@@ -175,7 +175,7 @@ def load_whisper_model():
 # Text file handler
 def handle_text_file(file):
     """Handle text/PDF file processing"""
-    file_content = file.read().decode()
+    file_content = file.read().decode("utf-8", errors = "replace")
     file_name = file.name
     file_hash = hashlib.md5(file_content.encode()).hexdigest()
 

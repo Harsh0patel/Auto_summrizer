@@ -1,4 +1,5 @@
 whisper==1.1.10
+ffmpg
 requests
 pydub
 streamlit
